@@ -38,8 +38,7 @@ class Notes extends Controller
         $imageFileName = null;
         if ($request->hasFile('image')) {
             $imageFileName = time() . '.' . $request->image->extension();
-            $path = $request->file('image')->storeAs('images', $imageFileName, 'public');
-            $request->image->storeAs($path, $imageFileName);
+            $request->file('image')->storeAs('images', $imageFileName, 'public');
         }
 
         ModelsNotes::create([
@@ -53,7 +52,10 @@ class Notes extends Controller
 
     public function editnotes($id)
     {
-        $data =  ModelsNotes::find($id);
+        $data = ModelsNotes::find($id);
+        if (!$data) {
+            return redirect()->route('note-lists')->with('error', 'Catatan tidak ditemukan!');
+        }
         $sesi = session()->get('user');
         // @dd($sesi[0]['name']);
         return view('add-notes', compact('data'));
@@ -72,8 +74,7 @@ class Notes extends Controller
             if ($request->hasFile('image')) {
                 Storage::disk('public')->delete('images/' . $data->image_path);
                 $imageFileName = time() . '.' . $request->image->extension();
-                $path = $request->file('image')->storeAs('images', $imageFileName, 'public');
-                $request->image->storeAs($path, $imageFileName);
+                $request->file('image')->storeAs('images', $imageFileName, 'public');
                 $data->update([
                     'title' => $validasi['title'],
                     'content' => $validasi['content'],
@@ -143,9 +144,11 @@ class Notes extends Controller
 
     public function restore_all()
     {
-        $note = ModelsNotes::onlyTrashed();
-        $note->restore();
+        $notes = ModelsNotes::onlyTrashed()->get();
+        foreach ($notes as $note) {
+            $note->restore();
+        }
 
-        return redirect()->route('note-lists');
+        return redirect()->route('note-lists')->with('success', 'Semua catatan berhasil dipulihkan!');
     }
 }
