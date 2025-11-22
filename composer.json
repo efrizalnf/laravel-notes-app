@@ -6,6 +6,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "google-gemini-php/laravel": "^2.0",
         "laravel/framework": "^12",
         "laravel/tinker": "^2.9"
     },
@@ -45,6 +46,10 @@
             "@php artisan key:generate --ansi",
             "@php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\"",
             "@php artisan migrate --graceful --ansi"
+        ],
+        "dev": [
+            "php artisan serve",
+            "npm run dev"
         ]
     },
     "extra": {

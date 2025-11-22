@@ -6,7 +6,7 @@ use App\Models\Notes as ModelsNotes;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-
+use Gemini\Laravel\Facades\Gemini;
 class Notes extends Controller
 {
     public function __construct() {}
@@ -16,9 +16,20 @@ class Notes extends Controller
         $notes = ModelsNotes::all();
         $user = User::all();
         // @dd($user[0]['name']);
-        session()->put('user', $user);
+        $result = Gemini::generativeModel(model: 'gemini-2.0-flash')->generateContent('find my phone please');
 
-        return view('notes', compact('notes'));
+        $result->text(); // Hello! How can I assist you today?
+        // dd($result);
+        session()->put('user', $user);
+        return view('notes', compact('result', 'notes'));
+    }
+
+    public function cetbot()  {
+        $result = Gemini::generativeModel(model: 'gemini-2.0-flash')->generateContent('Hello');
+
+        $result->text(); // Hello! How can I assist you today?
+        dd($result);
+        return $result;
     }
 
     public function addnotes()
