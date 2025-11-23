@@ -20,6 +20,6 @@ Route::controller(Notes::class)->group(function() {
     Route::delete('notes/delete_forever/{id}', 'delete_forever')->name('delete-forever');
     Route::get('notes/delete_all', 'delete_all')->name('delete-all');
     Route::get('notes/restore_all', 'restore_all')->name('restore-all');
-    Route::post('notes/gemini', 'cetbot')->name('helo-gem');
+    Route::post('notes/cetbot', 'cetbot')->name('helo-gem');
 });
 

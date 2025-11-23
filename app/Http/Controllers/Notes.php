@@ -15,21 +15,25 @@ class Notes extends Controller
     {
         $notes = ModelsNotes::all();
         $user = User::all();
-        // @dd($user[0]['name']);
-        $result = Gemini::generativeModel(model: 'gemini-2.0-flash')->generateContent('find my phone please');
-
-        $result->text(); // Hello! How can I assist you today?
-        // dd($result);
         session()->put('user', $user);
-        return view('notes', compact('result', 'notes'));
+        return view('notes', compact('notes'));
     }
 
-    public function cetbot()  {
-        $result = Gemini::generativeModel(model: 'gemini-2.0-flash')->generateContent('Hello');
-
-        $result->text(); // Hello! How can I assist you today?
-        dd($result);
-        return $result;
+    public function cetbot(Request $request) {
+        $requ = $request->input('message');
+        if ($requ == 'ada berapa catatan saya' ) {
+            $notes = ModelsNotes::all();
+            echo "Total notes: " . $notes->count() . "\n" . "\n";
+            foreach ($notes as $note) {
+                echo 'Title: ' . $note->title . "\n"  . 'Content: ' . $note->content . "\n" . "\n";
+            }
+        }else{
+            $result = Gemini::generativeModel(model: 'gemini-2.0-flash')->streamGenerateContent($requ);
+            // $result = Gemini::generativeModel(model: 'gemini-2.0-flash')->streamGenerateContent('haloo');
+            foreach ($result as $response) {
+                echo $response->text();
+            }
+        }
     }
 
     public function addnotes()
