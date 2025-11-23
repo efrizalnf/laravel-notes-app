@@ -49,6 +49,8 @@
         ],
         "dev": [
             "php artisan serve",
+            "php artisan queue:listen --tries=1",
+            "php artisan pail",
             "npm run dev"
         ]
     },
